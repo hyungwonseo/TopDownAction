@@ -11,21 +11,28 @@ public class ItemBox : MonoBehaviour
 
     public int arrangeId = 0;       //배치 식별에 사용
 
+    SaveLoadManager saveLoadManager;
+
     // Start is called before the first frame update
     void Start()
     {
+        saveLoadManager = GameObject.Find("SaveLoadManager").GetComponent<SaveLoadManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!isClosed)
+        {
+            GetComponent<SpriteRenderer>().sprite = openImage;
+        }
     }
     //접촉 (물리)
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isClosed && collision.gameObject.tag == "Player")
         {
-            //상자가 닫혀 있는 상태에서 플레이어와 접촛
+            //상자가 닫혀 있는 상태에서 플레이어와 접촉
             GetComponent<SpriteRenderer>().sprite = openImage;
             isClosed = false;   //열린 상태로 하기
             if (itemPrefab != null)
@@ -33,6 +40,7 @@ public class ItemBox : MonoBehaviour
                 //프리펩으로 아이템 만들기
                 Instantiate(itemPrefab, transform.position, Quaternion.identity);
             }
+            saveLoadManager.ChangeProps(this.gameObject.name, false);
         }
     }
 }

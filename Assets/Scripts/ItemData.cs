@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//¾ÆÀÌÅÛ Á¾·ù
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 public enum ItemType
 {
-    arrow,      //È­»ì
-    key,        //¿­¼è
-    life,	   //»ý¸í
+    arrow,      //È­ï¿½ï¿½
+    key,        //ï¿½ï¿½ï¿½ï¿½
+    life,	   //ï¿½ï¿½ï¿½ï¿½
 }
 
 public class ItemData : MonoBehaviour
 {
-    public ItemType type;           //¾ÆÀÌÅÛÀÇ Á¾·ù
-    public int count = 1;           //¾ÆÀÌÅÛ ¼ö
+    public ItemType type;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public int count = 1;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 
-    public int arrangeId = 0;       //½Äº°À» À§ÇÑ °ª
+    public int arrangeId = 0;       //ï¿½Äºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+
+    SaveLoadManager saveLoadManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        saveLoadManager = GameObject.Find("SaveLoadManager").GetComponent<SaveLoadManager>();
     }
 
     // Update is called once per frame
@@ -28,41 +30,43 @@ public class ItemData : MonoBehaviour
     {
 
     }
-    //Á¢ÃË (¹°¸®)
+    //ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
             if (type == ItemType.key)
             {
-                //¿­¼è
+                //ï¿½ï¿½ï¿½ï¿½
                 ItemKeeper.hasKeys += 1;
             }
             else if (type == ItemType.arrow)
             {
-                //È­»ì
+                //È­ï¿½ï¿½
                 ArrowShoot shoot = collision.gameObject.GetComponent<ArrowShoot>();
                 ItemKeeper.hasArrows += count;
             }
             else if (type == ItemType.life)
             {
-                //»ý¸í
+                //ï¿½ï¿½ï¿½ï¿½
                 if (PlayerController.hp < 3)
                 {
-                    //HP°¡ 3ÀÌÇÏ¸é Ãß°¡
+                    //HPï¿½ï¿½ 3ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ß°ï¿½
                     PlayerController.hp++;
                 }
             }
-            //++++ ¾ÆÀÌÅÛ È¹µæ ¿¬Ãâ ++++
-            //Ãæµ¹ ÆÇÁ¤ ºñÈ°¼º
+            saveLoadManager.ChangeProps(this.gameObject.name, false);
+
+            //++++ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ++++
+            //ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
-            //¾ÆÀÌÅÛÀÇ Rigidbody2D°¡Á®¿À±â
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Rigidbody2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             Rigidbody2D itemBody = GetComponent<Rigidbody2D>();
-            //Áß·Â Àû¿ë
+            //ï¿½ß·ï¿½ ï¿½ï¿½ï¿½ï¿½
             itemBody.gravityScale = 2.5f;
-            //À§·Î Æ¢¾î¿À¸£´Â ¿¬Ãâ
+            //ï¿½ï¿½ï¿½ï¿½ Æ¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             itemBody.AddForce(new Vector2(0, 6), ForceMode2D.Impulse);
-            //0.5ÃÊ µÚ¿¡ Á¦°Å
+            //0.5ï¿½ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½
             Destroy(gameObject, 0.5f);
         }
     }
