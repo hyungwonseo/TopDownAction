@@ -17,12 +17,12 @@ public class ItemData : MonoBehaviour
 
     public int arrangeId = 0;       //식별을 위한 값
 
-    SaveLoadManager saveLoadManager;
+    SaveLoadManager2 saveLoadManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        saveLoadManager = GameObject.Find("SaveLoadManager").GetComponent<SaveLoadManager>();
+        saveLoadManager = GameObject.FindObjectOfType<SaveLoadManager2>();
     }
 
     // Update is called once per frame
@@ -57,8 +57,6 @@ public class ItemData : MonoBehaviour
             }
             saveLoadManager.ChangeProps(this.gameObject.name, false);
 
-            //++++ ������ ȹ�� ���� ++++
-            //�浹 ���� ��Ȱ��
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
             //아이템의 Rigidbody2D가져오기
             Rigidbody2D itemBody = GetComponent<Rigidbody2D>();
