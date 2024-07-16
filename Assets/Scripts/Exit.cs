@@ -32,7 +32,14 @@ public class Exit : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {      
-            RoomManager.ChangeScene(sceneName, doorNumber);        
+            if (doorNumber == 100)
+            {
+                GameObject.FindObjectOfType<UIManager>().GameClear();
+            }
+            else
+            {
+                RoomManager.ChangeScene(sceneName, doorNumber);
+            }            
         }
     }
 }

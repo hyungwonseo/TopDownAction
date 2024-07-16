@@ -98,7 +98,7 @@ public class PlayerController : MonoBehaviour
         {
             //데미지 받는 중엔 점멸 시키기
             float val = Mathf.Sin(Time.time * 50);
-            Debug.Log(val);
+            //Debug.Log(val);
             if (val > 0)
             {
                 //스프라이트 표시

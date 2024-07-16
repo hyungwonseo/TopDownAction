@@ -2,20 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemKeeper : MonoBehaviour
+public class Wall : MonoBehaviour
 {
-    public static int hasKeys = 3;
-    public static int hasArrows = 3;
+    BossController boss;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        boss = GameObject.FindObjectOfType<BossController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (boss == null)
+        {
+            Destroy(gameObject);
+        }
     }
 }
