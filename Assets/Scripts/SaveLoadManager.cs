@@ -42,7 +42,7 @@ public class SaveLoadManager : MonoBehaviour
     public GlobalData globalData = new GlobalData();
     public SceneData sceneData = new SceneData();
 
-    float checkInterval = 1f;
+    float checkInterval = 0.2f;
     float tempTime = 0;
 
     void Start()
