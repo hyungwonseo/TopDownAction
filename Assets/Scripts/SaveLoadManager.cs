@@ -55,7 +55,9 @@ public class SaveLoadManager : MonoBehaviour
             , "GlobalData.json");
         if (File.Exists(filePathGlobal))
         {
-            LoadGlobalData();
+            // global과 scene으로 나눠져있던 로드 함수를 통합
+            globalData = LoadData<GlobalData>(filePathGlobal);
+
             PlayerController.hp = globalData.hp;
             ItemKeeper.hasArrows = globalData.arrows;
             ItemKeeper.hasKeys = globalData.keys;
@@ -65,14 +67,17 @@ public class SaveLoadManager : MonoBehaviour
             globalData.hp = PlayerController.hp;
             globalData.arrows = ItemKeeper.hasArrows;
             globalData.keys = ItemKeeper.hasKeys;
-            SaveGlobalData();
+            // global과 scene으로 나눠져있던 세이브 함수를 통합
+            SaveData<GlobalData>(globalData, filePathGlobal);
         }
 
         filePathScene = Path.Combine(Application.persistentDataPath
             , SceneManager.GetActiveScene().name + ".json");
         if (File.Exists(filePathScene))
         {
-            LoadSceneData();
+            // global과 scene으로 나눠져있던 로드 함수를 통합
+            sceneData = LoadData<SceneData>(filePathScene);
+
             foreach (SceneObject obj in sceneData.objects)
             {
                 if (!obj.isEnabled) // 비활성화
@@ -98,7 +103,8 @@ public class SaveLoadManager : MonoBehaviour
             AddObjectToSceneData("Item"); // Tag이름
             AddObjectToSceneData("ItemBox");
             AddObjectToSceneData("Door");
-            SaveSceneData();
+            // global과 scene으로 나눠져있던 세이브 함수를 통합
+            SaveData<SceneData>(sceneData, filePathScene);
         }
     }
 
@@ -125,74 +131,45 @@ public class SaveLoadManager : MonoBehaviour
             }
             if (dataChanged)
             {
-                SaveGlobalData();
+                // global과 scene으로 나눠져있던 세이브 함수를 통합
+                SaveData<GlobalData>(globalData, filePathGlobal);
             }
             tempTime = 0;
         }
         
     }    
 
-    public void LoadGlobalData()
+    public T LoadData<T>(string filePath)
     {
-        string jsonData = File.ReadAllText(filePathGlobal);
-        globalData = JsonConvert.DeserializeObject<GlobalData>(jsonData);
-        Debug.Log("Data loaded from " + filePathGlobal);
+        string jsonData = File.ReadAllText(filePath);
+        T data = JsonConvert.DeserializeObject<T>(jsonData);
+        Debug.Log("Data loaded from " + filePath);
+        return data;
     }
 
-    /*public void SaveGlobalData()
+    // 동기방식 세이브
+    /*public void SaveData<T>(T data, string filePath)
     {
-        string jsonData = JsonConvert.SerializeObject(globalData
-            , Formatting.Indented);
-        File.WriteAllText(filePathGlobal, jsonData);
-        Debug.Log("Data saved to " + filePathGlobal);
+        string jsonData = JsonConvert.SerializeObject(data, Formatting.Indented);
+        File.WriteAllText(filePath, jsonData);
+        Debug.Log("Data saved to " + filePath);
     }*/
-
-    public async void SaveGlobalData()
+    
+    // 비동기방식 세이브
+    public async void SaveData<T>(T data, string filePath)
     {
-        await SaveGlobalDataAsync(); // 저장 기능은 비동기 처리함
+        await SaveDataAsync<T>(data, filePath); // 저장 기능은 비동기 처리함
     }
 
-    async Task SaveGlobalDataAsync() // Task를 리턴하는 비동기 함수
+    async Task SaveDataAsync<T>(T data, string filePath) // Task를 리턴하는 비동기 함수
     {
-        string jsonData = JsonConvert.SerializeObject(globalData
-            , Formatting.Indented);
-        using (StreamWriter writer = new StreamWriter(filePathGlobal))
+        string jsonData = JsonConvert.SerializeObject(data, Formatting.Indented);
+        using (StreamWriter writer = new StreamWriter(filePath))
         {
             await writer.WriteAsync(jsonData);
         }
-        Debug.Log("Data saved to " + filePathGlobal);
-    }
-
-    public void LoadSceneData()
-    {
-        string jsonData = File.ReadAllText(filePathScene);
-        sceneData = JsonConvert.DeserializeObject<SceneData>(jsonData);
-        Debug.Log("Data loaded from " + filePathScene);
-    }
-
-    /*public void SaveSceneData()
-    {
-        string jsonData = JsonConvert.SerializeObject(sceneData
-            , Formatting.Indented);
-        File.WriteAllText(filePathScene, jsonData);
-        Debug.Log("Data saved to " + filePathScene);
-    }*/
-
-    public async void SaveSceneData()
-    {
-        await SaveSceneDataAsync(); // 저장 기능은 비동기 처리함
-    }
-
-    async Task SaveSceneDataAsync() // Task를 리턴하는 비동기 함수
-    {
-        string jsonData = JsonConvert.SerializeObject(sceneData
-            , Formatting.Indented);
-        using (StreamWriter writer = new StreamWriter(filePathScene))
-        {
-            await writer.WriteAsync(jsonData);
-        }
-        Debug.Log("Data saved to " + filePathScene);
-    }
+        Debug.Log("Data saved to " + filePath);
+    }      
 
     public void AddObjectToSceneData(string tag)
     {
@@ -220,7 +197,8 @@ public class SaveLoadManager : MonoBehaviour
         }
         if (dataChanged)
         {
-            SaveSceneData();
+            // global과 scene으로 나눠져있던 세이브 함수를 통합
+            SaveData<SceneData>(sceneData, filePathScene);
         }        
     }
 }
