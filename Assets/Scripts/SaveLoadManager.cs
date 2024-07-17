@@ -122,4 +122,25 @@ public class SaveLoadManager : MonoBehaviour
         sceneData = JsonConvert.DeserializeObject<SceneData>(jsonData);
         Debug.Log("Data loaded from " + filePathScene);
     }
+
+    public void SaveSceneData()
+    {
+        string jsonData = JsonConvert.SerializeObject(sceneData
+            , Formatting.Indented);
+        File.WriteAllText(filePathScene, jsonData);
+        Debug.Log("Data saved to " + filePathScene);
+    }
+
+    public void AddObjectToSceneData(string tag)
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
+        foreach (GameObject obj in objects)
+        {
+            SceneObject sceneObject = new SceneObject();
+            sceneObject.objectName = obj.name;
+            sceneObject.isEnabled = obj.activeSelf;
+
+            sceneData.objects.Add(sceneObject);
+        }
+    }
 }

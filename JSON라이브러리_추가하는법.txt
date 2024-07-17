@@ -1,0 +1,4 @@
+Window - PackageManager
+상단 제일 왼쪽 + 버튼 클릭
+Add package from git url
+com.unity.nuget.newtonsoft-json 입력후 Add 
