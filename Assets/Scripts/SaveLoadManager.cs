@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using System.IO;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json; // Json.NET을 사용하기 위한 네임스페이스
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 public class GlobalData
 {
@@ -36,16 +35,19 @@ public class SceneObject
 
 public class SaveLoadManager : MonoBehaviour
 {
-    private string filePathGlobal;
-    private string filePath;
-    private float checkInterval = 0.2f;
-    private float tempTime = 0;
+    string filePathGlobal;
+    string filePathScene;
     public GlobalData globalData = new GlobalData();
     public SceneData sceneData = new SceneData();
 
     void Start()
-    {
-        filePathGlobal = Path.Combine(Application.persistentDataPath, "SavaData.json");
+    {        
+        // 글로벌 데이터 저장파일이 있으면 로딩 -> 데이터 업데이트
+        // 없으면 -> 코드에 정의된 초기값을 글로벌 데이터에 입력하고 파일로 저장
+        // 해당 씬이름의 저장파일이 있으면 로딩 -> 씬의 구성 props의 활성화여부 설정
+        // 없으면 -> 씬의 props를 씬 데이터에 적용하고 활성화여부는 true -> 저장
+        filePathGlobal = Path.Combine(Application.persistentDataPath
+            , "GlobalData.json");
         if (File.Exists(filePathGlobal))
         {
             LoadGlobalData();
@@ -53,7 +55,7 @@ public class SaveLoadManager : MonoBehaviour
             ItemKeeper.hasArrows = globalData.arrows;
             ItemKeeper.hasKeys = globalData.keys;
         }
-        else
+        else 
         {
             globalData.hp = PlayerController.hp;
             globalData.arrows = ItemKeeper.hasArrows;
@@ -61,156 +63,63 @@ public class SaveLoadManager : MonoBehaviour
             SaveGlobalData();
         }
 
-        filePath = Path.Combine(Application.persistentDataPath, SceneManager.GetActiveScene().name + ".json");
-        if (File.Exists(filePath))
+        filePathScene = Path.Combine(Application.persistentDataPath
+            , SceneManager.GetActiveScene().name + ".json");
+        if (File.Exists(filePathScene))
         {
-            LoadSceneData();            
-            foreach (SceneObject obj in sceneData.objects) 
+            LoadSceneData();
+            foreach (SceneObject obj in sceneData.objects)
             {
-                if (!obj.isEnabled) {
+                if (!obj.isEnabled) // 비활성화
+                {
                     GameObject target = GameObject.Find(obj.objectName);
-                    if (target != null) 
+                    if (target != null) // 해당 아이템이 있으면,
                     {
-                        if (target.GetComponent<ItemBox>() != null) 
+                        if (target.GetComponent<ItemBox>() != null)
                         {
                             target.GetComponent<ItemBox>().isClosed = false;
                         }
                         else
                         {
                             target.SetActive(false);
-                        }                        
+                        }       
                     }
                 }
             }
         }
         else
-        {   
-            sceneData.scene = SceneManager.GetActiveScene().name;         
-            AddObjectsToPropsData("Enemy");
-            AddObjectsToPropsData("Door");
-            AddObjectsToPropsData("Item");
-
+        {
+            sceneData.scene = SceneManager.GetActiveScene().name;
+            AddObjectToSceneData("Item"); // Tag이름
+            AddObjectToSceneData("Door");
             SaveSceneData();
         }
     }
 
     void Update()
     {
-        tempTime += Time.deltaTime; 
-        if (tempTime > checkInterval) 
-        {
-            bool dataChanged = false;
-            if (globalData.hp != PlayerController.hp) 
-            {
-                globalData.hp = PlayerController.hp;
-                dataChanged = true;
-            }
-            if (globalData.arrows != ItemKeeper.hasArrows)
-            {
-                globalData.arrows = ItemKeeper.hasArrows;
-                dataChanged = true;
-            }
-            if (globalData.keys != ItemKeeper.hasKeys)
-            {
-                globalData.keys = ItemKeeper.hasKeys;
-                dataChanged = true;
-            }
-            if (dataChanged)
-            {
-                SaveGlobalData();
-            }
-            tempTime = 0;
-        }        
-    }
-
-    private void AddObjectsToPropsData(string tag)
-    {
-        GameObject[] objects = GameObject.FindGameObjectsWithTag(tag);
-        foreach (GameObject obj in objects)
-        {
-            SceneObject sceneObject = new SceneObject
-            {
-                objectName = obj.name,
-                isEnabled = obj.activeSelf
-            };
-            sceneData.objects.Add(sceneObject);
-        }
-    }
-    
-    public void ChangeProps(string propName, bool value) 
-    {
-        foreach (SceneObject obj in sceneData.objects)
-        {
-            if (obj.objectName == propName)
-            {
-                obj.isEnabled = value;
-            }
-            SaveSceneData();
-        }
-    }
-
-    public async void SaveGlobalData()
-    {
-        await SaveGlobalDataAsync();
-    }
-
-    public async void SaveSceneData()
-    {
-        await SaveSceneDataAsync();
-    }
-
-    private async Task SaveGlobalDataAsync()
-    {
-        string jsonData = JsonConvert.SerializeObject(globalData, Formatting.Indented);        
-        using (StreamWriter writer = new StreamWriter(filePathGlobal))
-        {
-            await writer.WriteAsync(jsonData);
-        }
-        Debug.Log("Data saved to " + filePathGlobal);
-    }
-
-    private async Task SaveSceneDataAsync()
-    {
-        string jsonData = JsonConvert.SerializeObject(sceneData, Formatting.Indented);        
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            await writer.WriteAsync(jsonData);
-        }
-        Debug.Log("Data saved to " + filePath);
-    }
-
-    // public static void SaveData()
-    // {
-    //     string jsonData = JsonConvert.SerializeObject(propsData, Formatting.Indented);
-    //     File.WriteAllText(filePath, jsonData);
-    //     Debug.Log("Data saved to " + filePath);
-    // }
+         
+    }    
 
     public void LoadGlobalData()
     {
-        if (File.Exists(filePathGlobal))
-        {
-            string jsonData = File.ReadAllText(filePathGlobal);
-            globalData = JsonConvert.DeserializeObject<GlobalData>(jsonData);
-            Debug.Log("Data loaded from " + filePathGlobal);
-        }
-        else
-        {
-            Debug.LogWarning("Save file not found");
-        }
+        string jsonData = File.ReadAllText(filePathGlobal);
+        globalData = JsonConvert.DeserializeObject<GlobalData>(jsonData);
+        Debug.Log("Data loaded from " + filePathGlobal);
+    }
+
+    public void SaveGlobalData()
+    {
+        string jsonData = JsonConvert.SerializeObject(globalData
+            , Formatting.Indented);
+        File.WriteAllText(filePathGlobal, jsonData);
+        Debug.Log("Data saved to " + filePathGlobal);
     }
 
     public void LoadSceneData()
     {
-        if (File.Exists(filePath))
-        {
-            string jsonData = File.ReadAllText(filePath);
-            sceneData = JsonConvert.DeserializeObject<SceneData>(jsonData);
-            Debug.Log("Data loaded from " + filePath);
-        }
-        else
-        {
-            Debug.LogWarning("Save file not found");
-        }
+        string jsonData = File.ReadAllText(filePathScene);
+        sceneData = JsonConvert.DeserializeObject<SceneData>(jsonData);
+        Debug.Log("Data loaded from " + filePathScene);
     }
 }
