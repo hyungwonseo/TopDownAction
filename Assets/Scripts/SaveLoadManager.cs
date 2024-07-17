@@ -91,6 +91,7 @@ public class SaveLoadManager : MonoBehaviour
         {
             sceneData.scene = SceneManager.GetActiveScene().name;
             AddObjectToSceneData("Item"); // Tag이름
+            AddObjectToSceneData("ItemBox");
             AddObjectToSceneData("Door");
             SaveSceneData();
         }

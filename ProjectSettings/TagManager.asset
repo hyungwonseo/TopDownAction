@@ -9,6 +9,7 @@ TagManager:
   - Exit
   - Door
   - Item
+  - ItemBox
   layers:
   - Default
   - TransparentFX
