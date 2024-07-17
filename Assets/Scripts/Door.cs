@@ -5,12 +5,12 @@ using UnityEngine;
 public class Door : MonoBehaviour
 {
     public int arrangeId = 0;
-    //SaveLoadManager saveLoadManager;
+    SaveLoadManager saveLoadManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        //saveLoadManager = GameObject.FindObjectOfType<SaveLoadManager>();
+        saveLoadManager = GameObject.FindObjectOfType<SaveLoadManager>();
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class Door : MonoBehaviour
             if (ItemKeeper.hasKeys > 0)
             {
                 ItemKeeper.hasKeys--;
-                //saveLoadManager.ChangeProps(this.gameObject.name, false);
+                saveLoadManager.SetSceneData(this.gameObject.name, false);
                 Destroy(this.gameObject);                
             }
         }

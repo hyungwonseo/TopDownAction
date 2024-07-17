@@ -11,12 +11,12 @@ public class ItemBox : MonoBehaviour
 
     public int arrangeId = 0;       //배치 식별에 사용
 
-    //SaveLoadManager saveLoadManager;
+    SaveLoadManager saveLoadManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        //saveLoadManager = GameObject.FindObjectOfType<SaveLoadManager>();
+        saveLoadManager = GameObject.FindObjectOfType<SaveLoadManager>();
     }
 
     // Update is called once per frame
@@ -40,7 +40,7 @@ public class ItemBox : MonoBehaviour
                 //프리펩으로 아이템 만들기
                 Instantiate(itemPrefab, transform.position, Quaternion.identity);
             }
-            //saveLoadManager.ChangeProps(this.gameObject.name, false);
+            saveLoadManager.SetSceneData(this.gameObject.name, false);
         }
     }
 }

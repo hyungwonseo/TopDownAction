@@ -3,7 +3,9 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
+#if USE_SCRIPTABLE_OBJECT
 public class GlobalData
 {
     public int arrows;
@@ -39,6 +41,9 @@ public class SaveLoadManager : MonoBehaviour
     string filePathScene;
     public GlobalData globalData = new GlobalData();
     public SceneData sceneData = new SceneData();
+
+    float checkInterval = 1f;
+    float tempTime = 0;
 
     void Start()
     {        
@@ -99,7 +104,32 @@ public class SaveLoadManager : MonoBehaviour
 
     void Update()
     {
-         
+        tempTime += Time.deltaTime;
+        if (tempTime > checkInterval)
+        {
+            bool dataChanged = false;
+            if (globalData.hp != PlayerController.hp)
+            {
+                globalData.hp = PlayerController.hp;
+                dataChanged = true;
+            }
+            if (globalData.arrows != ItemKeeper.hasArrows)
+            {
+                globalData.arrows = ItemKeeper.hasArrows;
+                dataChanged = true;
+            }
+            if (globalData.keys != ItemKeeper.hasKeys)
+            {
+                globalData.keys = ItemKeeper.hasKeys;
+                dataChanged = true;
+            }
+            if (dataChanged)
+            {
+                SaveGlobalData();
+            }
+            tempTime = 0;
+        }
+        
     }    
 
     public void LoadGlobalData()
@@ -109,11 +139,27 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log("Data loaded from " + filePathGlobal);
     }
 
-    public void SaveGlobalData()
+    /*public void SaveGlobalData()
     {
         string jsonData = JsonConvert.SerializeObject(globalData
             , Formatting.Indented);
         File.WriteAllText(filePathGlobal, jsonData);
+        Debug.Log("Data saved to " + filePathGlobal);
+    }*/
+
+    public async void SaveGlobalData()
+    {
+        await SaveGlobalDataAsync(); // 저장 기능은 비동기 처리함
+    }
+
+    async Task SaveGlobalDataAsync() // Task를 리턴하는 비동기 함수
+    {
+        string jsonData = JsonConvert.SerializeObject(globalData
+            , Formatting.Indented);
+        using (StreamWriter writer = new StreamWriter(filePathGlobal))
+        {
+            await writer.WriteAsync(jsonData);
+        }
         Debug.Log("Data saved to " + filePathGlobal);
     }
 
@@ -124,11 +170,27 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log("Data loaded from " + filePathScene);
     }
 
-    public void SaveSceneData()
+    /*public void SaveSceneData()
     {
         string jsonData = JsonConvert.SerializeObject(sceneData
             , Formatting.Indented);
         File.WriteAllText(filePathScene, jsonData);
+        Debug.Log("Data saved to " + filePathScene);
+    }*/
+
+    public async void SaveSceneData()
+    {
+        await SaveSceneDataAsync(); // 저장 기능은 비동기 처리함
+    }
+
+    async Task SaveSceneDataAsync() // Task를 리턴하는 비동기 함수
+    {
+        string jsonData = JsonConvert.SerializeObject(sceneData
+            , Formatting.Indented);
+        using (StreamWriter writer = new StreamWriter(filePathScene))
+        {
+            await writer.WriteAsync(jsonData);
+        }
         Debug.Log("Data saved to " + filePathScene);
     }
 
@@ -144,4 +206,22 @@ public class SaveLoadManager : MonoBehaviour
             sceneData.objects.Add(sceneObject);
         }
     }
+
+    public void SetSceneData(string name, bool value)
+    {
+        bool dataChanged = false;
+        foreach (SceneObject obj in sceneData.objects)
+        {
+            if (obj.objectName == name)
+            {
+                obj.isEnabled = value;
+                dataChanged = true;
+            }            
+        }
+        if (dataChanged)
+        {
+            SaveSceneData();
+        }        
+    }
 }
+#endif

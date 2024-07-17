@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateItemCount();  //아이템 수 갱심
+        UpdateItemCount();  //아이템 수 갱신
         UpdateHP();         //HP갱신
     }
 
