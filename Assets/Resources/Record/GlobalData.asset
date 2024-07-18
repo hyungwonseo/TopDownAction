@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 060cf7830619442d1969790d423f8deb, type: 3}
-  m_Name: GlobalRecord
+  m_Name: GlobalData
   m_EditorClassIdentifier: 
-  arrows: 8
-  keys: 4
+  arrows: 3
+  keys: 3
   hp: 3

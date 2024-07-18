@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-#if USE_SCRIPTABLE_OBJECT
+#if !USE_SCRIPTABLE_OBJECT
 public class GlobalData
 {
     public int arrows;

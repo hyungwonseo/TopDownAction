@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(GlobalRecord))]
-public class GlobalRecordEditor : Editor
+[CustomEditor(typeof(GlobalData))]
+public class GlobalDataEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        GlobalRecord globalRecord = (GlobalRecord)target;
+        GlobalData globalData = (GlobalData)target;
 
         if (GUILayout.Button("Load From JSON"))
         {
-            globalRecord.LoadFromJson();
-            EditorUtility.SetDirty(globalRecord);
+            globalData.LoadFromJson();
+            EditorUtility.SetDirty(globalData);
             AssetDatabase.SaveAssets();
         }
     }

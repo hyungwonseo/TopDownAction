@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.IO;
 
-[CreateAssetMenu(fileName = "GlobalRecord", menuName = "GameData/GlobalRecord")]
-public class GlobalRecord : ScriptableObject
+[CreateAssetMenu(fileName = "GlobalData", menuName = "GameData/GlobalData")]
+public class GlobalData : ScriptableObject
 {
     public int arrows;
     public int keys;
@@ -10,7 +10,7 @@ public class GlobalRecord : ScriptableObject
 
     public void LoadFromJson()
     {
-        string path = Path.Combine(Application.persistentDataPath, "globalRecord.json");
+        string path = Path.Combine(Application.persistentDataPath, "GlobalData.json");
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);

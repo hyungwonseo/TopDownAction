@@ -10,27 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f58526872a90b5e86a52412e35bac2b9, type: 3}
-  m_Name: Dungeon1Record
+  m_Name: WorldMapData
   m_EditorClassIdentifier: 
-  sceneName: Dungeon1
+  sceneName: WorldMap
   objects:
-  - entryName: Life3
+  - objectName: ItemBox1
+    isEnabled: 1
+  - objectName: ItemBox2
+    isEnabled: 1
+  - objectName: ItemBox3
+    isEnabled: 1
+  - objectName: Door
     isEnabled: 0
-  - entryName: Arrow2
-    isEnabled: 1
-  - entryName: Arrow5
-    isEnabled: 1
-  - entryName: Arrow6
-    isEnabled: 0
-  - entryName: Arrow3
-    isEnabled: 1
-  - entryName: ItemBox
-    isEnabled: 0
-  - entryName: Arrow1
-    isEnabled: 0
-  - entryName: Life2
-    isEnabled: 1
-  - entryName: Life1
-    isEnabled: 1
-  - entryName: Arrow4
-    isEnabled: 1

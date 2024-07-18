@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f58526872a90b5e86a52412e35bac2b9, type: 3}
+  m_Name: Dungeon1Data
+  m_EditorClassIdentifier: 
+  sceneName: Dungeon1
+  objects:
+  - objectName: ItemBox
+    isEnabled: 1
+  - objectName: Life3
+    isEnabled: 1
+  - objectName: Arrow2
+    isEnabled: 1
+  - objectName: Arrow5
+    isEnabled: 1
+  - objectName: Arrow6
+    isEnabled: 1
+  - objectName: Arrow3
+    isEnabled: 1
+  - objectName: Arrow1
+    isEnabled: 1
+  - objectName: Life2
+    isEnabled: 1
+  - objectName: Life1
+    isEnabled: 1
+  - objectName: Arrow4
+    isEnabled: 1

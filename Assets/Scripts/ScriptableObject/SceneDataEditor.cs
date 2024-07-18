@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(SceneRecord))]
+[CustomEditor(typeof(SceneData))]
 public class SceneRecordEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        SceneRecord sceneRecord = (SceneRecord)target;
+        SceneData sceneData = (SceneData)target;
 
         if (GUILayout.Button("Load From JSON"))
         {
-            sceneRecord.LoadFromJson();
-            EditorUtility.SetDirty(sceneRecord);
+            sceneData.LoadFromJson();
+            EditorUtility.SetDirty(sceneData);
             AssetDatabase.SaveAssets();
         }
     }
